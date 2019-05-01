@@ -49,16 +49,34 @@ function customerQuestions(){
 function updateProductTable(answer){
   connection.query("SELECT * FROM products WHERE item_id = ?", [answer.productId],function(err,response){
     if(err) throw err;
-    connection.query("UPDATE products SET stock_quanity = ? WHERE item_id = ?", 
-    [response[0].stock_quanity-parseInt(answer.quanity),answer.productId],function(err,response){
-      
+    
+    if( [response[0].stock_quanity] <= parseInt(answer.quanity)){
       getAllProducts();
+      return console.log("Sorry there is not enough items in stock")
+    }
+    
+    if( response[0].stock_quanity >= parseInt(answer.quanity)){
+      connection.query("UPDATE products SET stock_quanity = ? WHERE item_id = ?", 
+    [response[0].stock_quanity-parseInt(answer.quanity),answer.productId],function(err,response){
+     
+        
+          console.log("Thank you for your order")
+      getAllProducts();
+    }
+   
+        
+      
+    )}
+   
+      
+      
+      // getAllProducts();
       // if(answer.quanity <= stock_quanity){
       //   return "Congragulations on your order"
 
       // }
       // return " Sorry there is not enough in stock, please try again"
-    })
+  // )}
+  })}
 
-  })
-}
+  
